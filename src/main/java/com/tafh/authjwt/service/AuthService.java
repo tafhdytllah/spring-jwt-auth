@@ -6,11 +6,13 @@ import com.tafh.authjwt.model.UserRegisterRequest;
 import com.tafh.authjwt.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -35,13 +37,13 @@ public class AuthService {
 
         validationService.validate(request);
 
-//        if (userRepository.existByUsername(request.getUsername())) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already registered");
-//        }
-//
-//        if (userRepository.existByEmail(request.getEmail())) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exist");
-//        }
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already registered");
+        }
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exist");
+        }
 
         User user = new User();
         user.setId(UUID.randomUUID().toString());
